@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DevOps Incident Management Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        input, button {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            background: #38bdf8;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #334155;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .endpoint {
+            color: #4ade80;
+            cursor: pointer;
+        }
+
+        .status-open { color: #f87171; }
+        .status-resolved { color: #4ade80; }
+
+        .health-up { color: #4ade80; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>🚀 DevOps Incident Management Simulator</h1>
+
+<div class="container">
+
+    <!-- Incident Management -->
+    <div class="card">
+        <h2>📌 Incident Management</h2>
+
+        <input id="title" placeholder="Incident Title">
+        <input id="severity" placeholder="Severity (LOW/MEDIUM/HIGH)">
+        <button onclick="createIncident()">Create Incident</button>
+
+        <h3>Active Incidents</h3>
+        <button onclick="loadIncidents()">Refresh</button>
+        <ul id="incidentList"></ul>
+    </div>
+
+    <!-- Endpoints & Health -->
+    <div class="card">
+        <h2>🔗 Available Endpoints</h2>
+
+        <p class="endpoint" onclick="openEndpoint('/incidents')">
+            GET /incidents
+        </p>
+
+        <p class="endpoint" onclick="openEndpoint('/health')">
+            GET /health
+        </p>
+
+        <p>
+            POST /incidents
+        </p>
+
+        <p>
+            PUT /resolve/:id
+        </p>
+
+        <h2>🩺 Health Status</h2>
+        <button onclick="checkHealth()">Check Health</button>
+        <p id="healthStatus"></p>
+    </div>
+
+</div>
+
+<script>
+    async function loadIncidents() {
+        const res = await fetch('/incidents');
+        const data = await res.json();
+        const list = document.getElementById('incidentList');
+        list.innerHTML = '';
+
+        data.forEach(i => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <strong>${i.id}</strong> - ${i.title}
+                <span class="status-${i.status.toLowerCase()}">
+                    (${i.status})
+                </span>
+                <button onclick="resolveIncident(${i.id})">
+                    Resolve
+                </button>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    async function createIncident() {
+        const title = document.getElementById('title').value;
+        const severity = document.getElementById('severity').value || "LOW";
+
+        await fetch('/incidents', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title, severity})
+        });
+
+        loadIncidents();
+    }
+
+    async function resolveIncident(id) {
+        await fetch(`/resolve/${id}`, { method: 'PUT' });
+        loadIncidents();
+    }
+
+    async function checkHealth() {
+        const res = await fetch('/health');
+        const data = await res.json();
+
+        document.getElementById('healthStatus').innerHTML =
+            `<span class="health-up">Status: ${data.status}</span>
+             <br>Uptime: ${Math.floor(data.uptime)}s`;
+    }
+
+    function openEndpoint(path) {
+        window.open(path, '_blank');
+    }
+
+    loadIncidents();
+</script>
+
+</body>
+</html>

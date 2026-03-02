@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 app.use(express.json());
-
+app.use(express.static(__dirname + '/public'));
 // In-memory storage for incidents
 let incidents = [];
 
@@ -54,7 +54,7 @@ app.get('/health', (req, res) => {
 });
 // Start server only if run directly
 if (require.main === module) {
-    app.listen(8080, () => {
+    app.listen(8080, '0.0.0.0', () => {
         console.log("Server running on port 8080");
     });
 }
