@@ -1,10 +1,10 @@
 # DevOps Incident Management Simulator
 
-Student Name: Pratham Agarwal 
+Student Name: Pratham Agarwal  
 Registration No: 23FE10CSE00541  
 Course: CSE3253 DevOps [PE6]  
 Semester: VI (2025-2026)  
-Project Type: CI/CD & Containerization (Fundamentals)
+Project Type: CI/CD & Containerization (Fundamentals)  
 Difficulty: Intermediate  
 
 ---
@@ -60,5 +60,5 @@ In modern DevOps environments, production systems frequently encounter incidents
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/devops-project-incident-simulator.git
+git clone https://github.com/PrathamAgarwal1/devops-project-incident-simulator
 cd devops-project-incident-simulator

@@ -3,14 +3,21 @@ const app = express();
 
 app.use(express.json());
 
+// In-memory storage for incidents
 let incidents = [];
 
-// Get all incidents
+/*
+  GET /incidents
+  Returns all existing incidents
+*/
 app.get('/incidents', (req, res) => {
     res.json(incidents);
 });
 
-// Create new incident
+/*
+  POST /incidents
+  Creates a new incident
+*/
 app.post('/incidents', (req, res) => {
     const incident = {
         id: incidents.length + 1,
@@ -18,10 +25,14 @@ app.post('/incidents', (req, res) => {
         status: "OPEN"
     };
     incidents.push(incident);
+    console.log("New incident created:", incident);
     res.json(incident);
 });
 
-// Resolve incident
+/*
+  PUT /resolve/:id
+  Marks an incident as RESOLVED
+*/
 app.put('/resolve/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const incident = incidents.find(i => i.id === id);
@@ -34,6 +45,7 @@ app.put('/resolve/:id', (req, res) => {
     }
 });
 
+// Start server only if run directly
 if (require.main === module) {
     app.listen(8080, () => {
         console.log("Server running on port 8080");
