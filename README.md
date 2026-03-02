@@ -20,14 +20,17 @@ In modern DevOps environments, production systems frequently encounter incidents
 - [x] Implement CI/CD using GitHub Actions
 - [x] Add automated testing
 - [x] Simulate monitoring structure
+- [x] Implement health check endpoint for monitoring
 
 ### Key Features
 - Create incidents
 - View all incidents
 - Resolve incidents
+- Health check endpoint (`/health`)
 - Dockerized deployment
 - Automated CI pipeline
 - Unit testing support
+- Git branching strategy implementation
 
 ---
 
@@ -44,7 +47,7 @@ In modern DevOps environments, production systems frequently encounter incidents
 - Containerization: Docker
 - Orchestration: Not Applicable
 - Configuration Management: Not Applicable
-- Monitoring: Basic monitoring structure (Nagios folder)
+- Monitoring: Basic monitoring structure (Nagios folder + health endpoint)
 
 ---
 
@@ -55,10 +58,12 @@ In modern DevOps environments, production systems frequently encounter incidents
 - Git 2.30+
 - Node.js 18+
 
+---
+
 ### Installation
 
-1. Clone the repository:
+1️⃣ Clone the repository:
 
 ```bash
-git clone https://github.com/PrathamAgarwal1/devops-project-incident-simulator
+git clone https://github.com/PrathamAgarwal1/devops-project-incident-simulator.git
 cd devops-project-incident-simulator
