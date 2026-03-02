@@ -44,7 +44,14 @@ app.put('/resolve/:id', (req, res) => {
         res.status(404).send("Incident not found");
     }
 });
-
+// Health check endpoint (used in monitoring)
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: "UP",
+        uptime: process.uptime(),
+        timestamp: Date.now()
+    });
+});
 // Start server only if run directly
 if (require.main === module) {
     app.listen(8080, () => {
