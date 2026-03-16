@@ -47,7 +47,7 @@ app.put('/resolve/:id', (req, res) => {
 // Health check endpoint (used in monitoring)
 app.get('/health', (req, res) => {
     res.status(200).json({
-        status: "UP",
+        status: "UP",   
         uptime: process.uptime(),
         timestamp: Date.now()
     });

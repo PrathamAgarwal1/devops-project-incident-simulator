@@ -7,3 +7,5 @@ services:
       dockerfile: infrastructure/docker/Dockerfile
     ports:
       - "8080:8080"
+
+      #in order to make multiple containers run together using a single YAML config file we can use docker compose up. 

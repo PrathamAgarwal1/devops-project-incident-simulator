@@ -9,18 +9,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3 #downlaods the code from the repo. Runner is empty initally.Without this pipeline doesnt have access to the code 
 
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18 
 
     - name: Install Dependencies
-      run: npm install
+      run: npm install #install all required packages defined in package.json
 
     - name: Run Tests
-      run: npm test
+      run: npm test 
+      #uses Jest to run all the tests defined in project. If test fails pipeline stops here and error gets reported in logs . If tests succeed pipeline continues to next step and docker image is created which can then be used to containerise the application and deploy it.
 
     - name: Build Docker Image
-      run: docker build -f infrastructure/docker/Dockerfile -t incident-simulator .
+      run: docker build -f infrastructure/docker/Dockerfile -t incident-simulator . #location of dockerfile and name of the image to be created
