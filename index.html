@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DevOps Incident Management Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        input, button {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            background: #38bdf8;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #334155;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .endpoint {
+            color: #4ade80;
+            cursor: pointer;
+        }
+
+        .status-open { color: #f87171; }
+        .status-resolved { color: #4ade80; }
+
+        .health-up { color: #4ade80; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1> DevOps Incident Management Simulator</h1>
+
+<div class="container">
+
+    <!-- Incident Management -->
+    <div class="card">
+        <h2> Incident Management</h2>
+
+        <input id="title" placeholder="Incident Title">
+        <input id="severity" placeholder="Severity (LOW/MEDIUM/HIGH)">
+        <button onclick="createIncident()">Create Incident</button>
+
+        <h3>Active Incidents</h3>
+        <button onclick="loadIncidents()">Refresh</button>
+        <ul id="incidentList"></ul>
+    </div>
+
+    <!-- Endpoints & Health -->
+    <div class="card">
+        <h2> Available Endpoints</h2>
+
+        <p class="endpoint" onclick="openEndpoint('/incidents')">
+            GET /incidents
+        </p>
+
+        <p class="endpoint" onclick="openEndpoint('/health')">
+            GET /health
+        </p>
+
+        <p>
+            POST /incidents
+        </p>
+
+        <p>
+            PUT /resolve/:id
+        </p>
+
+        <h2> Health Status</h2>
+        <button onclick="checkHealth()">Check Health</button>
+        <p id="healthStatus"></p>
+    </div>
+
+</div>
+
+<script>
+    // Local storage key
+    const STORAGE_KEY = 'devops_incidents';
+
+    // Helper to get incidents from localStorage
+    function getStoredIncidents() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored ? JSON.parse(stored) : [];
+    }
+
+    // Helper to save incidents to localStorage
+    function saveIncidents(incidents) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(incidents));
+    }
+
+    function loadIncidents() {
+        const data = getStoredIncidents();
+        const list = document.getElementById('incidentList');
+        list.innerHTML = '';
+
+        data.forEach(i => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <strong>${i.id}</strong> - ${i.title}
+                <span class="status-${i.status.toLowerCase()}">
+                    (${i.status})
+                </span>
+                ${i.status === 'OPEN' ? `<button onclick="resolveIncident(${i.id})">Resolve</button>` : ''}
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    function createIncident() {
+        const title = document.getElementById('title').value;
+        const severity = document.getElementById('severity').value || "LOW";
+        if (!title) return alert("Please enter an incident title");
+
+        const incidents = getStoredIncidents();
+        const newIncident = {
+            id: incidents.length > 0 ? Math.max(...incidents.map(i => i.id)) + 1 : 1,
+            title,
+            severity,
+            status: "OPEN",
+            timestamp: Date.now()
+        };
+
+        incidents.push(newIncident);
+        saveIncidents(incidents);
+        
+        document.getElementById('title').value = '';
+        document.getElementById('severity').value = '';
+        loadIncidents();
+    }
+
+    function resolveIncident(id) {
+        const incidents = getStoredIncidents();
+        const incident = incidents.find(i => i.id === id);
+        if (incident) {
+            incident.status = "RESOLVED";
+            saveIncidents(incidents);
+            loadIncidents();
+        }
+    }
+
+    function checkHealth() {
+        // Mock health check for static version
+        const data = {
+            status: "UP",
+            uptime: (Date.now() - performance.timing.navigationStart) / 1000,
+            timestamp: Date.now()
+        };
+
+        document.getElementById('healthStatus').innerHTML =
+            `<span class="health-up">Status: ${data.status}</span>
+             <br>Uptime: ${Math.floor(data.uptime)}s (Client-side)`;
+    }
+
+    function openEndpoint(path) {
+        // In static mode, we just show a message or do nothing
+        alert(`Endpoint ${path} is not available in the static GitHub Pages version. It requires the Express backend.`);
+    }
+
+    // Initial load
+    loadIncidents();
+</script>
+
+</body>
+</html>
